@@ -10573,6 +10573,7 @@ export class Editor extends EventEmitter<TLEventMap> {
 							info.button = 0
 						}
 
+            const _prevIsPanning = inputs.isPanning 
 						if (inputs.isPanning) {
 							if (!inputs.keys.has('Space')) {
 								inputs.isPanning = false
@@ -10595,7 +10596,7 @@ export class Editor extends EventEmitter<TLEventMap> {
 								}
 							}
 
-							if (slideSpeed > 0) {
+							if (!_prevIsPanning && slideSpeed > 0) {
 								this.slideCamera({ speed: slideSpeed, direction: slideDirection })
 							}
 						} else {
