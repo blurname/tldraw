@@ -15,7 +15,7 @@ import {
 	useShallowArrayIdentity,
 	useShallowObjectIdentity,
 } from '@tldraw/editor'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { TldrawHandles } from './canvas/TldrawHandles'
 import { TldrawOverlays } from './canvas/TldrawOverlays'
 import { TldrawScribble } from './canvas/TldrawScribble'
@@ -267,6 +267,10 @@ function InsideOfEditorAndUiContext({
 
 	const { Canvas } = useEditorComponents()
 	const { ContextMenu } = useTldrawUiComponents()
+	useEffect(() => {
+		console.error('build')
+		return () => {}
+	}, [])
 
 	if (ContextMenu) {
 		// should wrap canvas
