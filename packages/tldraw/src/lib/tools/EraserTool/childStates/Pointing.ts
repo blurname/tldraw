@@ -1,8 +1,8 @@
 import {
 	isAccelKey,
 	StateNode,
+	TLDrawShape,
 	TLFrameShape,
-	TLGroupShape,
 	TLPointerEventInfo,
 	TLShapeId,
 } from '@tldraw/editor'
@@ -27,12 +27,13 @@ export class Pointing extends StateNode {
 
 		for (let n = currentPageShapesSorted.length, i = n - 1; i >= 0; i--) {
 			const shape = currentPageShapesSorted[i]
-			if (
-				this.editor.isShapeOrAncestorLocked(shape) ||
-				this.editor.isShapeOfType<TLGroupShape>(shape, 'group')
-			) {
-				continue
-			}
+			if (!this.editor.isShapeOfType<TLDrawShape>(shape, 'draw')) continue
+			// if (
+			// 	this.editor.isShapeOrAncestorLocked(shape) ||
+			// 	this.editor.isShapeOfType<TLGroupShape>(shape, 'group')
+			// ) {
+			// 	continue
+			// }
 
 			if (
 				this.editor.isPointInShape(shape, currentPagePoint, {
