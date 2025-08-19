@@ -37,7 +37,6 @@
 		"aws-login": "aws sso login --sso-session=tldraw",
 		"clean": "internal/scripts/clean.sh",
 		"context": "tsx internal/scripts/context.ts",
-		"postinstall": "husky install && yarn refresh-assets",
 		"refresh-assets": "lazy refresh-assets",
 		"refresh-context": "tsx internal/scripts/refresh-context.ts",
 		"dev": "LAZYREPO_PRETTY_OUTPUT=0 lazy run dev --filter='apps/examples' --filter='packages/tldraw' --filter='apps/bemo-worker' --filter='apps/dotcom/image-resize-worker'",
