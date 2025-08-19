@@ -39,6 +39,7 @@
 		"prepack": "yarn run -T tsx ../../internal/scripts/prepack.ts",
 		"postpack": "../../internal/scripts/postpack.sh",
 		"pack-tarball": "yarn pack",
+		"yalc:publish": "yarn build && yalc publish",
 		"lint": "yarn run -T tsx ../../internal/scripts/lint.ts",
 		"context": "yarn run -T tsx ../../internal/scripts/context.ts"
 	},

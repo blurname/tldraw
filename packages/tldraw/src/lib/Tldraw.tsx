@@ -268,6 +268,7 @@ function InsideOfEditorAndUiContext({
 	const { Canvas } = useEditorComponents()
 	const { ContextMenu } = useTldrawUiComponents()
 	useEffect(() => {
+		console.log('1233425345')
 		console.error('build')
 		return () => {}
 	}, [])
