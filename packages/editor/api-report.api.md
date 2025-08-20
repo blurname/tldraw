@@ -881,6 +881,9 @@ export class Editor extends EventEmitter<TLEventMap> {
                 isPinching: boolean;
                 isPointing: boolean;
                 isSpacebarPanning: boolean;
+                rightClickStatus: {
+                    state: "down" | "idle" | "moved";
+                };
             };
             instanceState: TLInstance;
             pageState: TLInstancePageState;
@@ -1346,6 +1349,9 @@ export class Editor extends EventEmitter<TLEventMap> {
         isPinching: boolean;
         isPointing: boolean;
         isSpacebarPanning: boolean;
+        rightClickStatus: {
+            state: "down" | "idle" | "moved";
+        };
     };
     interrupt(): this;
     isAncestorSelected(shape: TLShape | TLShapeId): boolean;
