@@ -72,7 +72,7 @@
 		"i18n-upload-strings": "tsx internal/scripts/i18n-upload-strings.ts",
 		"i18n-download-strings": "tsx internal/scripts/i18n-download-strings.ts",
 		"pre-yalc:publish-all": "yarn workspace @tldraw/utils run yalc:publish && yarn workspace @tldraw/validate run yalc:publish && yarn workspace @tldraw/state run yalc:publish && yarn workspace @tldraw/state-react run yalc:publish && yarn workspace @tldraw/store run yalc:publish && yarn workspace @tldraw/tlschema run yalc:publish  && yarn workspace @tldraw/editor run yalc:publish && yarn workspace tldraw run yalc:publish",
-		"yalc:publish-tldraw": "yarn workspace tldraw run yalc:publish"
+		"yalc:publish-tldraw": "yarn workspace tldraw run yalc:publish && yarn workspace @tldraw/editor run yalc:publish"
 	},
 	"engines": {
 		"npm": ">=7.0.0",
