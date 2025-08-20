@@ -10501,7 +10501,7 @@ export class Editor extends EventEmitter<TLEventMap> {
 							this._restoreToolId = this.getCurrentToolId()
 							this.complete()
 							this.setCurrentTool('eraser')
-						} else if (info.button === MIDDLE_MOUSE_BUTTON) {
+						} else if (info.button === MIDDLE_MOUSE_BUTTON || info.button === RIGHT_MOUSE_BUTTON) {
 							// Middle mouse pan activates panning unless we're already panning (with spacebar)
 							if (!this.inputs.isPanning) {
 								this._prevCursor = this.getInstanceState().cursor.type
@@ -10587,6 +10587,7 @@ export class Editor extends EventEmitter<TLEventMap> {
 									this.setCursor({ type: 'grab', rotation: 0 })
 									break
 								}
+                case RIGHT_MOUSE_BUTTON:
 								case MIDDLE_MOUSE_BUTTON: {
 									if (this.inputs.keys.has(' ')) {
 										this.setCursor({ type: 'grab', rotation: 0 })
@@ -10671,7 +10672,7 @@ export class Editor extends EventEmitter<TLEventMap> {
 
 						// If we've lifted the space key,
 						if (info.code === 'Space') {
-							if (this.inputs.buttons.has(MIDDLE_MOUSE_BUTTON)) {
+							if (this.inputs.buttons.has(MIDDLE_MOUSE_BUTTON) || this.inputs.buttons.has(RIGHT_MOUSE_BUTTON)) {
 								// If we're still middle dragging, continue panning
 							} else {
 								// otherwise, stop panning
