@@ -10754,7 +10754,7 @@ export class Editor extends EventEmitter<TLEventMap> {
 			if (info.button === MIDDLE_MOUSE_BUTTON) {
 				info.name = 'middle_click'
 			} else if (info.button === RIGHT_MOUSE_BUTTON) {
-				info.name = 'right_click'
+				// info.name = 'right_click'
 			}
 
 			// If a left click pointer event, send the event to the click manager.
@@ -10773,6 +10773,9 @@ export class Editor extends EventEmitter<TLEventMap> {
 				}
 			}
 		}
+    if(info.type === 'pointer' && info.name === 'pointer_up' && info.button === RIGHT_MOUSE_BUTTON){
+      info.name = 'right_click'
+    }
 
 		// Send the event to the statechart. It will be handled by all
 		// active states, starting at the root.

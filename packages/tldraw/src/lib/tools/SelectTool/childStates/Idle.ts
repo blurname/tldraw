@@ -22,6 +22,7 @@ import { getShouldEnterCropMode } from '../../selection-logic/getShouldEnterCrop
 import { selectOnCanvasPointerUp } from '../../selection-logic/selectOnCanvasPointerUp'
 import { updateHoveredShapeId } from '../../selection-logic/updateHoveredShapeId'
 import { startEditingShapeWithLabel } from '../selectHelpers'
+import {LEFT_MOUSE_BUTTON} from '@tldraw/editor/src/lib/constants'
 
 const SKIPPED_KEYS_FOR_AUTO_EDITING = [
 	'Delete',
@@ -55,6 +56,7 @@ export class Idle extends StateNode {
 	}
 
 	override onPointerDown(info: TLPointerEventInfo) {
+    if(info.button !== LEFT_MOUSE_BUTTON) return
 		const shouldEnterCropMode = info.ctrlKey && getShouldEnterCropMode(this.editor)
 
 		switch (info.target) {
