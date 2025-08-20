@@ -1,4 +1,4 @@
-import { StateNode, TLPointerEventInfo, TLShape } from '@tldraw/editor'
+import { StateNode, TLFrameShape, TLPointerEventInfo, TLShape } from '@tldraw/editor'
 import { isOverArrowLabel } from '../../../shapes/arrow/arrowLabel'
 import { getTextLabels } from '../../../utils/shapes/shapes'
 
@@ -25,9 +25,14 @@ export class PointingShape extends StateNode {
 		this.isDoubleClick = false
 		this.didCtrlOnEnter = accelKey
 		const outermostSelectingShape = this.editor.getOutermostSelectableShape(info.shape)
-		const selectedAncestor = this.editor.findShapeAncestor(outermostSelectingShape, (parent) =>
+		let selectedAncestor = this.editor.findShapeAncestor(outermostSelectingShape, (parent) =>
 			selectedShapeIds.includes(parent.id)
 		)
+    if(selectedAncestor) {
+      if(this.editor.isShapeOfType<TLFrameShape>(selectedAncestor, 'frame')) {
+        selectedAncestor = undefined
+      }
+    }
 
 		if (
 			this.didCtrlOnEnter ||
