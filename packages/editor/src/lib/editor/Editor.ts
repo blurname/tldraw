@@ -9567,6 +9567,9 @@ export class Editor extends EventEmitter<TLEventMap> {
 		isSpacebarPanning: false,
 		/** Velocity of mouse pointer, in pixels per millisecond */
 		pointerVelocity: new Vec(),
+    rightClickStatus: {
+      state: 'idle' as 'idle' | 'down' | 'moved',
+    }
 	}
 
 	/**
@@ -10501,14 +10504,16 @@ export class Editor extends EventEmitter<TLEventMap> {
 							this._restoreToolId = this.getCurrentToolId()
 							this.complete()
 							this.setCurrentTool('eraser')
-						} else if (info.button === MIDDLE_MOUSE_BUTTON || info.button === RIGHT_MOUSE_BUTTON) {
+						} else if (info.button === MIDDLE_MOUSE_BUTTON) {
 							// Middle mouse pan activates panning unless we're already panning (with spacebar)
 							if (!this.inputs.isPanning) {
 								this._prevCursor = this.getInstanceState().cursor.type
 							}
 							this.inputs.isPanning = true
 							clearTimeout(this._longPressTimeout)
-						}
+						} else if (info.button === RIGHT_MOUSE_BUTTON) {
+              this.inputs.rightClickStatus.state = 'down'
+            }
 
 						// We might be panning because we did a middle mouse click, or because we're holding spacebar and started a regular click
 						// Also stop here, we don't want the state chart to receive the event
@@ -10523,6 +10528,21 @@ export class Editor extends EventEmitter<TLEventMap> {
 					case 'pointer_move': {
 						// If the user is in pen mode, but the pointer is not a pen, stop here.
 						if (!isPen && isPenMode) return
+              if(this.inputs.rightClickStatus.state === 'down'){
+                this.inputs.rightClickStatus.state = 'moved'
+                // Middle mouse pan activates panning unless we're already panning (with spacebar)
+                if (!this.inputs.isPanning) {
+                  this._prevCursor = this.getInstanceState().cursor.type
+                }
+                this.inputs.isPanning = true
+                clearTimeout(this._longPressTimeout)
+
+                if (this.inputs.isPanning) {
+                  this.stopCameraAnimation()
+                  this.setCursor({ type: 'grabbing', rotation: 0 })
+                  return this
+                }
+              }
 
 						const { x: cx, y: cy, z: cz } = unsafe__withoutCapture(() => this.getCamera())
 
@@ -10587,14 +10607,25 @@ export class Editor extends EventEmitter<TLEventMap> {
 									this.setCursor({ type: 'grab', rotation: 0 })
 									break
 								}
-                case RIGHT_MOUSE_BUTTON:
 								case MIDDLE_MOUSE_BUTTON: {
 									if (this.inputs.keys.has(' ')) {
 										this.setCursor({ type: 'grab', rotation: 0 })
 									} else {
 										this.setCursor({ type: this._prevCursor, rotation: 0 })
 									}
+                  break
 								}
+                case RIGHT_MOUSE_BUTTON: {
+                  if(this.inputs.rightClickStatus.state === 'moved') {
+                    if (this.inputs.keys.has(' ')) {
+                      this.setCursor({ type: 'grab', rotation: 0 })
+                    } else {
+                      this.setCursor({ type: this._prevCursor, rotation: 0 })
+                    }
+                  }
+                  this.inputs.rightClickStatus.state = 'idle'
+                  break
+                }
 							}
 
 							if (!_prevIsPanning && slideSpeed > 0) {
@@ -10605,7 +10636,25 @@ export class Editor extends EventEmitter<TLEventMap> {
 								// If we were erasing with a stylus button, restore the tool we were using before we started erasing
 								this.complete()
 								this.setCurrentTool(this._restoreToolId)
-							}
+							}else if(info.button === RIGHT_MOUSE_BUTTON) {
+
+                if(this.inputs.rightClickStatus.state === 'down') {
+                  const canvasElement =  this.getContainer()?.querySelector('.tl-canvas')
+
+                  if (canvasElement) {
+                    const contextMenuEvent = new MouseEvent('contextmenu', {
+                      clientX: info.point.x,
+                      clientY: info.point.y,
+                      bubbles: true,
+                      cancelable: true,
+                    })
+                    // 添加标记表示这是编程触发的事件
+                    ;(contextMenuEvent as any).isProgrammatic = true
+                    canvasElement.dispatchEvent(contextMenuEvent)
+                  }
+                }
+                this.inputs.rightClickStatus.state = 'idle'
+              }
 						}
 						break
 					}

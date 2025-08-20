@@ -53,6 +53,31 @@ export function useCanvasEvents() {
 					name: 'pointer_up',
 					...getPointerInfo(e),
 				})
+
+				// 在 mouseup 时触发 contextmenu 事件
+				// if (e.button === 2) { // 只在左键释放时触发
+				// 	// 保存事件目标和坐标，避免在 setTimeout 中访问可能为 null 的 currentTarget
+				// 	const target = e.currentTarget
+				// 	const clientX = e.clientX
+				// 	const clientY = e.clientY
+				// 	
+				// 	setTimeout(() => {
+				// 		// 优先使用保存的 target，如果为 null 则通过 editor 获取画布元素
+				// 		const canvasElement = target || editor.getContainer()?.querySelector('.tl-canvas')
+				// 		
+				// 		if (canvasElement) {
+				// 			const contextMenuEvent = new MouseEvent('contextmenu', {
+				// 				clientX,
+				// 				clientY,
+				// 				bubbles: true,
+				// 				cancelable: true,
+				// 			})
+				// 			// 添加标记表示这是编程触发的事件
+				// 			;(contextMenuEvent as any).isProgrammatic = true
+				// 			canvasElement.dispatchEvent(contextMenuEvent)
+				// 		}
+				// 	}, 0)
+				// }
 			}
 
 			function onPointerEnter(e: React.PointerEvent) {
@@ -128,6 +153,12 @@ export function useCanvasEvents() {
 			}
 
 			function onContextMenu(e: React.MouseEvent) {
+				// 如果是我们通过编程方式触发的 contextmenu 事件，不阻止默认行为
+				// 通过检查事件是否有自定义属性来判断
+				if ((e.nativeEvent as any).isProgrammatic) {
+					return // 允许我们触发的 contextmenu 事件正常处理
+				}
+				// 阻止用户右键点击的默认 contextmenu
         preventDefault(e)
 			}
 
