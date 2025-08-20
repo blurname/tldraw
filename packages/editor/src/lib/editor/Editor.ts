@@ -10594,6 +10594,23 @@ export class Editor extends EventEmitter<TLEventMap> {
 						}
 
             const _prevIsPanning = inputs.isPanning 
+            const _dispatchContextMenu = () => {
+              const canvasElement =  this.getContainer()?.querySelector('.tl-canvas')
+
+              if (canvasElement) {
+                const contextMenuEvent = new MouseEvent('contextmenu', {
+                  clientX: info.point.x,
+                  clientY: info.point.y,
+                  bubbles: true,
+                  cancelable: true,
+                })
+                // 添加标记表示这是编程触发的事件
+                ;(contextMenuEvent as any).isProgrammatic = true
+                canvasElement.dispatchEvent(contextMenuEvent)
+              }
+              return 
+            }
+
 						if (inputs.isPanning) {
 							if (!inputs.keys.has('Space')) {
 								inputs.isPanning = false
@@ -10637,21 +10654,12 @@ export class Editor extends EventEmitter<TLEventMap> {
 								this.complete()
 								this.setCurrentTool(this._restoreToolId)
 							}else if(info.button === RIGHT_MOUSE_BUTTON) {
-
                 if(this.inputs.rightClickStatus.state === 'down') {
-                  const canvasElement =  this.getContainer()?.querySelector('.tl-canvas')
+                  _dispatchContextMenu()
+                  // 右键 resize handle 不会触发上面的 pointer_down，所以先用 idle 来判断，应该没什么问题
+                }else if(this.inputs.rightClickStatus.state === 'idle') {
+                  _dispatchContextMenu()
 
-                  if (canvasElement) {
-                    const contextMenuEvent = new MouseEvent('contextmenu', {
-                      clientX: info.point.x,
-                      clientY: info.point.y,
-                      bubbles: true,
-                      cancelable: true,
-                    })
-                    // 添加标记表示这是编程触发的事件
-                    ;(contextMenuEvent as any).isProgrammatic = true
-                    canvasElement.dispatchEvent(contextMenuEvent)
-                  }
                 }
                 this.inputs.rightClickStatus.state = 'idle'
               }
